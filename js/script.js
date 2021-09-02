@@ -36,12 +36,16 @@ const validationWarning = (action) => {
 const numberOfSearchResult = (quantity) => {
   searchResult.classList.remove("d-none");
   searchQuantity.innerText = quantity;
+  document.getElementById("input-text").innerText = `"${searchText.value}" `;
+  // clearing search field
+  searchText.value = "";
 };
 
 /* ------------
         searchBook function added to search button
 --------------*/
 const searchBook = () => {
+  searchResult.classList.add("d-none");
   spinner("show");
   validationWarning();
   displayResult.innerHTML = "";
@@ -56,9 +60,6 @@ const searchBook = () => {
 const dataProcess = (data) => {
   // hide spinner
   spinner();
-
-  // clearing search field
-  searchText.value = "";
 
   // validation
   if (data.numFound === 0) {
