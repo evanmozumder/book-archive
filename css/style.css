@@ -1,0 +1,51 @@
+/* ----------
+        common styles  
+       -------------- */
+body {
+  background-color: lightcyan !important;
+}
+
+/* -----------
+        validation area 
+        ---------------- */
+#validation-warning {
+  background-color: red;
+  color: black;
+}
+
+/* -----------
+        book div styles 
+        ----------------- */
+.col-md-3:hover .card-body {
+  height: auto !important;
+  overflow: visible;
+}
+.card-img-top {
+  height: 350px !important;
+}
+.card-body {
+  height: 200px !important;
+  overflow: hidden;
+}
+.card-title {
+  color: #52b9e8;
+}
+.authors {
+  color: lightcoral;
+}
+.publish-date {
+  color: chocolate;
+}
+.publisher {
+  color: darkcyan;
+}
+
+/* -----------
+        responsive for mobile 
+        ----------------- */
+@media (max-width: 700px) {
+  #search-result,
+  .input-group {
+    width: 100% !important;
+  }
+}

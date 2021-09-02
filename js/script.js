@@ -1,6 +1,26 @@
+/* ------------
+        getting element using corresponding id  
+--------------*/
 const searchText = document.getElementById("input-field");
 const displayResult = document.getElementById("display-result");
+const searchResult = document.getElementById("search-result");
+const searchQuantity = document.getElementById("number-of-search-result");
+const spinnerElement = document.getElementById("spinner");
 
+/* ------------
+        spinner function to show or hide spinner  
+--------------*/
+const spinner = (action) => {
+  if (action === "show") {
+    spinnerElement.classList.remove("d-none");
+  } else {
+    spinnerElement.classList.add("d-none");
+  }
+};
+
+/* ------------
+        validation warning for irrelevant search
+--------------*/
 const validationWarning = (action) => {
   const validation = document.getElementById("validation-warning");
   if (action === "show") {
@@ -10,54 +30,87 @@ const validationWarning = (action) => {
   }
 };
 
+/* ------------
+        display number of search result 
+--------------*/
 const numberOfSearchResult = (quantity) => {
-  const searchResult = document.getElementById("search-result");
-  const searchQuantity = document.getElementById("number-of-search-result");
-
   searchResult.classList.remove("d-none");
   searchQuantity.innerText = quantity;
 };
 
+/* ------------
+        searchBook function added to search button
+--------------*/
 const searchBook = () => {
+  spinner("show");
+  validationWarning();
   displayResult.innerHTML = "";
-  fetch(`http://openlibrary.org/search.json?q=${searchText.value}`)
+  fetch(`https://openlibrary.org/search.json?q=${searchText.value}`)
     .then((res) => res.json())
-    .then((data) => {
-      // validation
-      if (data.numFound === 0) {
-        validationWarning("show");
-        numberOfSearchResult(data.numFound);
-      } else {
-        validationWarning();
-        numberOfSearchResult(data.numFound);
-        displaySearchResult(data.docs);
-      }
-    });
+    .then((data) => dataProcess(data));
 };
 
-const displaySearchResult = (results) => {
-  //   console.log(results);
+/* ------------
+        processing returned data from the server
+--------------*/
+const dataProcess = (data) => {
+  // hide spinner
+  spinner();
+
+  // clearing search field
+  searchText.value = "";
+
+  // validation
+  if (data.numFound === 0) {
+    validationWarning("show");
+    numberOfSearchResult(data.numFound);
+  } else {
+    validationWarning();
+    numberOfSearchResult(data.numFound);
+    processSearchResult(data.docs.slice(0, 32));
+  }
+};
+
+/* ------------
+        processing search result  
+--------------*/
+const processSearchResult = (results) => {
+  // console.log(results[0]?.cover_i);
   results.forEach((result) => {
-    console.log(result?.first_publish_year);
-    const bookDiv = document.createElement("div");
-    bookDiv.classList.add("col-3");
-    bookDiv.innerHTML = `
-        <div class="card mt-3" style="width: 18rem;">
-            <img class='img-fluid card-img-top' src="https://covers.openlibrary.org/b/id/${result?.cover_i}-M.jpg">
-            <div class="card-body">
-                <h5 class="card-title">${result?.title}</h5>
-                <h5>Authors: ${result?.author_name}</h5>
-                <strong>Publication Date: ${result?.first_publish_year}</strong>
-                <p>Publisher: ${result?.publisher}</p>
-            </div>
-        </div>
-    `;
-    displayResult.appendChild(bookDiv);
+    // console.log(result);
+    if (result.cover_i === undefined) {
+      url = "image/No_image_available.png";
+    } else {
+      url = `https://covers.openlibrary.org/b/id/${result?.cover_i}-M.jpg`;
+    }
+    showSearchResult(result);
   });
 };
 
-{
-  /* <h5>Authors: ${result?.author_name?.forEach(
-                  (author) => author
-                )}</h5> */
-}
+/* ------------
+        display search result
+--------------*/
+const showSearchResult = (result) => {
+  const bookDiv = document.createElement("div");
+  bookDiv.classList.add("col-md-3");
+  bookDiv.innerHTML = `
+    <div class="card mt-4">
+      <img class='img-fluid img-thumbnail card-img-top' src="${url}">
+      <div class="card-body">
+        <h5 class="card-title">${
+          result.title ? result.title : "not found!"
+        }</h5>
+        <h5 class='authors'>${
+          result.author_name ? result.author_name : "not found!"
+        }</h5>
+        <h6>First Publish: <strong class='publish-date fw-bold'>${
+          result.first_publish_year ? result.first_publish_year : "not found!"
+        }</strong></h6>
+        <h6>Publisher: <span class="publisher">${
+          result.publisher ? result.publisher : "not found!"
+        }</span></h6>
+      </div>
+    </div>
+  `;
+  displayResult.appendChild(bookDiv);
+};
