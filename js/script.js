@@ -76,9 +76,7 @@ const dataProcess = (data) => {
         processing search result  
 --------------*/
 const processSearchResult = (results) => {
-  // console.log(results[0]?.cover_i);
   results.forEach((result) => {
-    // console.log(result);
     if (result.cover_i === undefined) {
       url = "image/No_image_available.png";
     } else {

@@ -16,17 +16,18 @@ body {
 /* -----------
         book div styles 
         ----------------- */
-.col-md-3:hover .card-body {
+.card-body {
+  height: 200px;
+  overflow: hidden;
+}
+.card:hover .card-body {
   height: auto !important;
   overflow: visible;
 }
 .card-img-top {
   height: 350px !important;
 }
-.card-body {
-  height: 200px !important;
-  overflow: hidden;
-}
+
 .card-title {
   color: #52b9e8;
 }
